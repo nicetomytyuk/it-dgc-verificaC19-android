@@ -26,6 +26,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
@@ -48,6 +49,9 @@ class CodeReaderFragment : Fragment(), NavController.OnDestinationChangedListene
 
     private lateinit var beepManager: BeepManager
     private var lastText: String? = null
+
+    private val SETTINGS_PREFS = "settings_prefs"
+    private val PREF_CAMERA_SWITCH = "pref_camera_switch"
 
     private val callback: BarcodeCallback = object : BarcodeCallback {
         override fun barcodeResult(result: BarcodeResult) {
@@ -90,7 +94,8 @@ class CodeReaderFragment : Fragment(), NavController.OnDestinationChangedListene
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (true) {
+        val sharedPreferences = requireActivity().getSharedPreferences(SETTINGS_PREFS, AppCompatActivity.MODE_PRIVATE)
+        if (!sharedPreferences.getBoolean(PREF_CAMERA_SWITCH, false)) {
             binding.barcodeScanner.visibility = View.GONE
             binding.scanContainer.visibility = View.VISIBLE
         }else {
@@ -102,11 +107,10 @@ class CodeReaderFragment : Fragment(), NavController.OnDestinationChangedListene
             binding.barcodeScanner.decodeContinuous(callback)
             binding.barcodeScanner.statusView.text = ""
             beepManager = BeepManager(requireActivity())
-
-            binding.backImage.setOnClickListener(this)
-            binding.backText.setOnClickListener(this)
         }
 
+        binding.backImage.setOnClickListener(this)
+        binding.backText.setOnClickListener(this)
     }
 
     override fun onDestroyView() {

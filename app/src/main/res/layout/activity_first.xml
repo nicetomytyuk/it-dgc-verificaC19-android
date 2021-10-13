@@ -184,6 +184,33 @@
 
             </androidx.cardview.widget.CardView>
 
+            <androidx.cardview.widget.CardView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/margin_16dp"
+                android:layout_marginTop="@dimen/margin_16dp"
+                android:background="@color/white"
+                app:cardCornerRadius="4dp"
+                app:cardElevation="@dimen/size_8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/privacy_policy_card">
+
+
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/switch_camera"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/titiliumfont"
+                        android:paddingHorizontal="@dimen/margin_24dp"
+                        android:paddingVertical="@dimen/margin_16dp"
+                        android:textColor="@color/blue_dark"
+                        android:textStyle="bold"
+                        android:text="@string/scanner_da_fotocamera" />
+
+
+            </androidx.cardview.widget.CardView>
+
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/verify_cert_title"

@@ -55,7 +55,8 @@ class FirstActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var binding: ActivityFirstBinding
 
     private val viewModel by viewModels<FirstViewModel>()
-
+    private val SETTINGS_PREFS = "settings_prefs"
+    private val PREF_CAMERA_SWITCH = "pref_camera_switch"
     private val requestPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
             if (isGranted) {
@@ -74,6 +75,15 @@ class FirstActivity : AppCompatActivity(), View.OnClickListener {
         setContentView(binding.root)
 
         binding.qrButton.setOnClickListener(this)
+
+        val sharedPreferences = getSharedPreferences(SETTINGS_PREFS, MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+
+        binding.switchCamera.isChecked = sharedPreferences.getBoolean(PREF_CAMERA_SWITCH, false)
+        binding.switchCamera.setOnCheckedChangeListener { _, isChecked ->
+            editor.putBoolean(PREF_CAMERA_SWITCH, isChecked)
+            editor.apply()
+        }
 
         val string = getString(R.string.version, BuildConfig.VERSION_NAME)
         val spannableString = SpannableString(string).also {
