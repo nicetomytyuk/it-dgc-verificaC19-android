@@ -90,15 +90,23 @@ class CodeReaderFragment : Fragment(), NavController.OnDestinationChangedListene
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val formats: Collection<BarcodeFormat> = listOf(BarcodeFormat.AZTEC, BarcodeFormat.QR_CODE)
-        binding.barcodeScanner.barcodeView.decoderFactory = DefaultDecoderFactory(formats)
-        binding.barcodeScanner.initializeFromIntent(requireActivity().intent)
-        binding.barcodeScanner.decodeContinuous(callback)
-        binding.barcodeScanner.statusView.text = ""
-        beepManager = BeepManager(requireActivity())
+        if (true) {
+            binding.barcodeScanner.visibility = View.GONE
+            binding.scanContainer.visibility = View.VISIBLE
+        }else {
+            binding.barcodeScanner.visibility = View.VISIBLE
+            binding.scanContainer.visibility = View.GONE
+            val formats: Collection<BarcodeFormat> = listOf(BarcodeFormat.AZTEC, BarcodeFormat.QR_CODE)
+            binding.barcodeScanner.barcodeView.decoderFactory = DefaultDecoderFactory(formats)
+            binding.barcodeScanner.initializeFromIntent(requireActivity().intent)
+            binding.barcodeScanner.decodeContinuous(callback)
+            binding.barcodeScanner.statusView.text = ""
+            beepManager = BeepManager(requireActivity())
 
-        binding.backImage.setOnClickListener(this)
-        binding.backText.setOnClickListener(this)
+            binding.backImage.setOnClickListener(this)
+            binding.backText.setOnClickListener(this)
+        }
+
     }
 
     override fun onDestroyView() {
