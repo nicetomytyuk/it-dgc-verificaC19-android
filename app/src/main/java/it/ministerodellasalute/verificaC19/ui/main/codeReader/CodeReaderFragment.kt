@@ -22,15 +22,21 @@
 package it.ministerodellasalute.verificaC19.ui.main.codeReader
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.fragment.findNavController
+import com.datalogic.decode.BarcodeManager
+import com.datalogic.decode.DecodeException
+import com.datalogic.decode.ReadListener
+import com.datalogic.device.ErrorManager
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.ResultPoint
 import com.google.zxing.client.android.BeepManager
@@ -52,6 +58,9 @@ class CodeReaderFragment : Fragment(), NavController.OnDestinationChangedListene
 
     private val SETTINGS_PREFS = "settings_prefs"
     private val PREF_CAMERA_SWITCH = "pref_camera_switch"
+
+    internal var decoder: BarcodeManager? = null
+    private var listener: ReadListener? = null
 
     private val callback: BarcodeCallback = object : BarcodeCallback {
         override fun barcodeResult(result: BarcodeResult) {
@@ -122,12 +131,50 @@ class CodeReaderFragment : Fragment(), NavController.OnDestinationChangedListene
         super.onResume()
         findNavController().addOnDestinationChangedListener(this)
         lastText = ""
+
+
+        if (decoder == null) { // Remember an onPause call will set it to null.
+            decoder = BarcodeManager()
+        }
+        // From here on, we want to be notified with exceptions in case of errors.
+        ErrorManager.enableExceptions(true)
+
+        try {
+
+            // Create an anonymous class.
+            listener = ReadListener { decodeResult ->
+                // Implement the callback method.
+                // Change the displayed text to the current received result.
+                val barcode = decodeResult.text.trimEnd()
+                lastText = barcode
+                navigateToVerificationPage(barcode)
+            }
+
+            // Remember to add it, as a listener.
+            decoder!!.addReadListener(listener)
+
+        } catch (e: DecodeException) {
+            Log.e("ERRDATALOGIC", "Error while trying to bind a listener to BarcodeManager", e)
+        }
     }
 
     override fun onPause() {
         super.onPause()
         findNavController().removeOnDestinationChangedListener(this)
         binding.barcodeScanner.pause()
+
+        if (decoder != null) {
+            try {
+                // Unregister our listener from it and free resources.
+                decoder!!.removeReadListener(listener)
+
+                // Let the garbage collector take care of our reference.
+                decoder = null
+            } catch (e: Exception) {
+                Log.e("ERRDATALOGIC", "Error while trying to remove a listener from BarcodeManager", e)
+            }
+
+        }
     }
 
     private fun navigateToVerificationPage(text: String) {
@@ -144,10 +191,13 @@ class CodeReaderFragment : Fragment(), NavController.OnDestinationChangedListene
         destination: NavDestination,
         arguments: Bundle?
     ) {
-        if (destination.id == R.id.codeReaderFragment) {
-            binding.barcodeScanner.resume()
-            lastText = ""
+        val sharedPreferences = requireActivity().getSharedPreferences(SETTINGS_PREFS, AppCompatActivity.MODE_PRIVATE)
+        if (sharedPreferences.getBoolean(PREF_CAMERA_SWITCH, false)) {
+            if (destination.id == R.id.codeReaderFragment) {
+                binding.barcodeScanner.resume()
+            }
         }
+        lastText = ""
     }
 
     override fun onClick(v: View?) {

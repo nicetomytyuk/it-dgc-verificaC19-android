@@ -172,6 +172,7 @@ dependencies {
     implementation Deps.retrofit2
     implementation Deps.log_interceptor
     implementation Deps.gson_converter
+    implementation 'com.github.datalogic:datalogic-android-sdk:1.12'
 
     testImplementation Deps.test_junit
     testImplementation "io.mockk:mockk:1.11.0"

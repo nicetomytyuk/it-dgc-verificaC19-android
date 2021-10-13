@@ -38,7 +38,6 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.text.set
 import androidx.lifecycle.observe
 import dagger.hilt.android.AndroidEntryPoint
 import it.ministerodellasalute.verificaC19.BuildConfig
@@ -157,7 +156,6 @@ class FirstActivity : AppCompatActivity(), View.OnClickListener {
             requestPermissionLauncher.launch(Manifest.permission.CAMERA)
         }
     }
-
 
     override fun onResume() {
         super.onResume()
