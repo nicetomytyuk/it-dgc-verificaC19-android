@@ -93,7 +93,7 @@
                             android:layout_marginTop="@dimen/margin_28dp"
                             android:fontFamily="@font/titiliumfont"
                             android:textColor="@color/blue_dark"
-                            android:textSize="32sp"
+                            android:textSize="24sp"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/checkmark"
                             tools:text="Certificazione valida per l'Italia" />
